@@ -4,16 +4,13 @@
 <div class="container mt-4">
     <!-- Заголовок и кнопки действий -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h3 class="mb-1">Каталог книг</h3>
-            <p class="text-muted mb-0">Все книги в базе данных</p>
-        </div>
+        <h3 class="mb-0">Авторы книг</h3>
         <div>
             <button class="btn btn-outline-primary me-2">
                 <i class="bi bi-filter me-1"></i>Фильтры
             </button>
             <button class="btn btn-primary">
-                <i class="bi bi-plus-circle me-1"></i>Добавить книгу
+                <i class="bi bi-plus-circle me-1"></i>Добавить автора
             </button>
         </div>
     </div>
@@ -22,33 +19,33 @@
     <div class="row mb-4">
         <div class="col-md-3">
             <div class="card border-0 bg-primary text-white">
-                <div class="card-body text-center py-3">
-                    <h5 class="card-title mb-0">{{ books|length }}</h5>
-                    <p class="card-text small mb-0">Всего книг</p>
+                <div class="card-body text-center">
+                    <h5 class="card-title">{{ authors|length }}</h5>
+                    <p class="card-text small">Всего авторов</p>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="card border-0 bg-success text-white">
-                <div class="card-body text-center py-3">
-                    <h5 class="card-title mb-0">{% widthratio books|length 1 0.85 %}</h5>
-                    <p class="card-text small mb-0">В наличии</p>
+                <div class="card-body text-center">
+                    <h5 class="card-title">24</h5>
+                    <p class="card-text small">Активных авторов</p>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="card border-0 bg-info text-white">
-                <div class="card-body text-center py-3">
-                    <h5 class="card-title mb-0">{{ unique_authors }}</h5>
-                    <p class="card-text small mb-0">Авторов</p>
+                <div class="card-body text-center">
+                    <h5 class="card-title">156</h5>
+                    <p class="card-text small">Всего книг</p>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="card border-0 bg-warning text-white">
-                <div class="card-body text-center py-3">
-                    <h5 class="card-title mb-0">12</h5>
-                    <p class="card-text small mb-0">Новых за неделю</p>
+                <div class="card-body text-center">
+                    <h5 class="card-title">8</h5>
+                    <p class="card-text small">Новых за месяц</p>
                 </div>
             </div>
         </div>
@@ -63,91 +60,97 @@
                         <span class="input-group-text bg-transparent">
                             <i class="bi bi-search"></i>
                         </span>
-                        <input type="text" class="form-control" placeholder="Поиск по названию, автору или жанру..." id="searchInput">
+                        <input type="text" class="form-control" placeholder="Поиск авторов..." id="searchInput">
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="d-flex gap-2 justify-content-end">
                         <select class="form-select form-select-sm" style="width: auto;">
-                            <option>Сортировка: По названию</option>
-                            <option>Сортировка: По автору</option>
-                            <option>Сортировка: По новизне</option>
+                            <option>Сортировка: По имени</option>
                             <option>Сортировка: По популярности</option>
+                            <option>Сортировка: По количеству книг</option>
                         </select>
-                        <div class="btn-group" role="group">
-                            <button type="button" class="btn btn-outline-secondary btn-sm active">
-                                <i class="bi bi-grid"></i>
-                            </button>
-                            <button type="button" class="btn btn-outline-secondary btn-sm">
-                                <i class="bi bi-list"></i>
-                            </button>
-                        </div>
+                        <button class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-arrow-clockwise"></i>
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    {% if books %}
-    <!-- Таблица книг -->
+    {% if authors %}
+    <!-- Таблица авторов -->
     <div class="card border-0 shadow-sm">
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
                     <thead class="table-light">
                         <tr>
-                            <th class="ps-4">Книга</th>
-                            <th>Автор</th>
-                            <th>Жанр</th>
+                            <th class="ps-4">Автор</th>
+                            <th>Дата рождения</th>
+                            <th>Биография</th>
+                            <th>Книги</th>
                             <th>Статус</th>
-                            <th>Цена</th>
                             <th class="text-center">Действия</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for book in books %}
-                        <tr class="book-row">
+                        {% for author in authors %}
+                        <tr class="author-row">
                             <td class="ps-4">
                                 <div class="d-flex align-items-center">
-                                    <img src="{{ book.photo.url }}" alt="Обложка {{ book.title }}" 
-                                         class="rounded me-3 shadow-sm" width="45" height="60" style="object-fit: cover;">
+                                    <img src="{{ author.photo.url }}" alt="Фото {{ author.first_name }}" 
+                                         class="rounded-circle me-3" width="50" height="50" style="object-fit: cover;">
                                     <div>
-                                        <a href="{{ book.id }}/" class="text-decoration-none fw-semibold text-dark">
-                                            {{ book.title|truncatewords:4 }}
+                                        <a href="{{ author.id }}/" class="text-decoration-none fw-semibold text-dark">
+                                            {{ author.first_name }} {{ author.last_name }}
                                         </a>
                                         <br>
-                                        <small class="text-muted">ISBN: {{ book.isbn }}</small>
+                                        <small class="text-muted">{{ author.books.count }} книг</small>
                                     </div>
                                 </div>
                             </td>
                             <td>
-                                <span class="badge bg-primary bg-opacity-10 text-primary">
-                                    <i class="bi bi-person me-1"></i>{{ book.display_author }}
+                                <span class="badge bg-light text-dark">
+                                    <i class="bi bi-calendar3 me-1"></i>{{ author.date_of_birth }}
                                 </span>
+                                {% if author.date_of_death %}
+                                <br>
+                                <small class="text-muted">† {{ author.date_of_death }}</small>
+                                {% endif %}
                             </td>
                             <td>
-                                <span class="badge bg-secondary bg-opacity-10 text-secondary">
-                                    {{ book.genre }}
-                                </span>
+                                <div class="text-truncate" style="max-width: 250px;" 
+                                     data-bs-toggle="tooltip" title="{{ author.about }}">
+                                    {{ author.about|truncatewords:15 }}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-wrap gap-1">
+                                    {% for book in author.books.all|slice:":3" %}
+                                    <span class="badge bg-primary bg-opacity-10 text-primary">
+                                        {{ book.title|truncatewords:2 }}
+                                    </span>
+                                    {% endfor %}
+                                    {% if author.books.count > 3 %}
+                                    <span class="badge bg-secondary">+{{ author.books.count|add:"-3" }}</span>
+                                    {% endif %}
+                                </div>
                             </td>
                             <td>
                                 <span class="badge bg-success">
-                                    <i class="bi bi-check-circle me-1"></i>В наличии
+                                    <i class="bi bi-check-circle me-1"></i>Активен
                                 </span>
-                            </td>
-                            <td>
-                                <span class="fw-bold text-primary">899 ₽</span>
-                                <br>
-                                <small class="text-muted text-decoration-line-through">1 099 ₽</small>
                             </td>
                             <td class="text-center">
                                 <div class="btn-group" role="group">
-                                    <a href="{{ book.id }}/" class="btn btn-outline-primary btn-sm" 
+                                    <a href="{{ author.id }}/" class="btn btn-outline-primary btn-sm" 
                                        data-bs-toggle="tooltip" title="Просмотр">
                                         <i class="bi bi-eye"></i>
                                     </a>
-                                    <a href="{{ book.photo.url }}" target="_blank" 
-                                       class="btn btn-outline-info btn-sm" data-bs-toggle="tooltip" title="Обложка">
+                                    <a href="{{ author.photo.url }}" target="_blank" 
+                                       class="btn btn-outline-info btn-sm" data-bs-toggle="tooltip" title="Фото">
                                         <i class="bi bi-image"></i>
                                     </a>
                                     <button class="btn btn-outline-warning btn-sm" data-bs-toggle="tooltip" title="Редактировать">
@@ -170,30 +173,26 @@
     <nav aria-label="Page navigation" class="mt-4">
         <ul class="pagination justify-content-center">
             <li class="page-item disabled">
-                <a class="page-link" href="#" tabindex="-1">
-                    <i class="bi bi-chevron-left"></i>
-                </a>
+                <a class="page-link" href="#" tabindex="-1">Предыдущая</a>
             </li>
             <li class="page-item active"><a class="page-link" href="#">1</a></li>
             <li class="page-item"><a class="page-link" href="#">2</a></li>
             <li class="page-item"><a class="page-link" href="#">3</a></li>
             <li class="page-item">
-                <a class="page-link" href="#">
-                    <i class="bi bi-chevron-right"></i>
-                </a>
+                <a class="page-link" href="#">Следующая</a>
             </li>
         </ul>
     </nav>
 
     {% else %}
-    <!-- Сообщение об отсутствии книг -->
+    <!-- Сообщение об отсутствии авторов -->
     <div class="text-center mt-5 py-5">
         <div class="py-5">
-            <i class="bi bi-book display-1 text-muted"></i>
-            <h4 class="mt-3 text-muted">Книги не найдены</h4>
-            <p class="text-muted">В базе данных пока нет книг.</p>
+            <i class="bi bi-people display-1 text-muted"></i>
+            <h4 class="mt-3 text-muted">Авторы не найдены</h4>
+            <p class="text-muted">В базе данных пока нет авторов.</p>
             <button class="btn btn-primary mt-2">
-                <i class="bi bi-plus-circle me-2"></i>Добавить первую книгу
+                <i class="bi bi-plus-circle me-2"></i>Добавить первого автора
             </button>
         </div>
     </div>
@@ -208,7 +207,7 @@
     // Поиск по таблице
     document.getElementById('searchInput').addEventListener('input', function() {
         const searchText = this.value.toLowerCase();
-        const rows = document.querySelectorAll('.book-row');
+        const rows = document.querySelectorAll('.author-row');
         
         rows.forEach(row => {
             const text = row.textContent.toLowerCase();
@@ -217,14 +216,6 @@
             } else {
                 row.style.display = 'none';
             }
-        });
-    });
-
-    // Переключение вида таблицы/сетки
-    document.querySelectorAll('.btn-group .btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            document.querySelectorAll('.btn-group .btn').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
         });
     });
 </script>
@@ -236,16 +227,13 @@
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }
-    .book-row:hover {
+    .author-row:hover {
         background-color: #f8f9fa !important;
         transform: translateX(2px);
         transition: all 0.2s ease;
     }
     .badge {
         font-size: 0.75rem;
-    }
-    .card .card-body.py-3 {
-        padding: 1rem !important;
     }
 </style>
 {% endblock %}

@@ -1,0 +1,211 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Хлебные крошки -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'index' %}" class="text-decoration-none">Главная</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'books' %}" class="text-decoration-none">Книги</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ book.title|truncatewords:5 }}</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <!-- Левая колонка - изображение книги -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="position-relative">
+                    <img src="{{ book.photo.url }}" class="card-img-top" alt="Обложка книги {{ book.title }}" style="height: 400px; object-fit: cover;">
+                    <div class="position-absolute top-0 end-0 m-2">
+                        <span class="badge bg-success">В наличии</span>
+                    </div>
+                </div>
+                <div class="card-body text-center">
+                    <a href="{{ book.photo.url }}" class="btn btn-outline-primary btn-sm" target="_blank">
+                        <i class="bi bi-zoom-in me-1"></i>Увеличить
+                    </a>
+                    <button class="btn btn-primary btn-sm ms-2">
+                        <i class="bi bi-cart-plus me-1"></i>В корзину
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Правая колонка - информация о книге -->
+        <div class="col-md-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h1 class="h2 mb-3">{{ book.title }}</h1>
+                    
+                    <!-- Авторы -->
+                    <div class="mb-3">
+                        <h6 class="text-muted">Автор{% if book.author.count > 1 %}ы{% endif %}:</h6>
+                        <div class="d-flex flex-wrap">
+                            {% for author in book.author.all %}
+                            <a href="{% url 'author-detail' author.id %}" class="btn btn-outline-secondary btn-sm me-2 mb-2">
+                                <i class="bi bi-person me-1"></i>{{ author.first_name }} {{ author.last_name }}
+                            </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Рейтинг -->
+                    <div class="mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="text-warning me-2">
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-half"></i>
+                            </div>
+                            <span class="text-muted">(4.5 из 5)</span>
+                            <span class="ms-3 text-muted"><i class="bi bi-chat-left-text me-1"></i>24 отзыва</span>
+                        </div>
+                    </div>
+
+                    <!-- Цена и действия -->
+                    <div class="bg-light p-3 rounded mb-4">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <h3 class="text-primary mb-0">1 299 ₽</h3>
+                                <small class="text-muted text-decoration-line-through">1 599 ₽</small>
+                                <span class="badge bg-danger ms-2">-19%</span>
+                            </div>
+                            <div>
+                                <button class="btn btn-primary me-2">
+                                    <i class="bi bi-cart-plus me-1"></i>Купить
+                                </button>
+                                <button class="btn btn-outline-secondary">
+                                    <i class="bi bi-heart me-1"></i>В избранное
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Основная информация -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="bi bi-bookmark text-primary me-2"></i>
+                                <strong>Жанр:</strong>
+                                <span class="ms-2">{{ book.genre }}</span>
+                            </div>
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="bi bi-translate text-primary me-2"></i>
+                                <strong>Язык:</strong>
+                                <span class="ms-2">{{ book.language }}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="bi bi-building text-primary me-2"></i>
+                                <strong>Издатель:</strong>
+                                <span class="ms-2">{{ book.publisher }}</span>
+                            </div>
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="bi bi-upc-scan text-primary me-2"></i>
+                                <strong>ISBN:</strong>
+                                <span class="ms-2">{{ book.isbn }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Аннотация -->
+                    <div class="mb-4">
+                        <h5 class="border-bottom pb-2">Аннотация</h5>
+                        <p class="text-justify">{{ book.summary }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Экземпляры книги -->
+            <div class="card border-0 shadow-sm mt-4">
+                <div class="card-body">
+                    <h5 class="card-title border-bottom pb-2">
+                        <i class="bi bi-collection me-2"></i>Доступные экземпляры
+                    </h5>
+                    
+                    {% if book.bookinstance_set.all %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Инвентарный номер</th>
+                                    <th>Статус</th>
+                                    <th>Дата возврата</th>
+                                    <th>Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for copy in book.bookinstance_set.all %}
+                                <tr>
+                                    <td><code>{{ copy.id }}</code></td>
+                                    <td>
+                                        <span class="badge {% if copy.status == 'a' %}bg-success{% elif copy.status == 'o' %}bg-warning{% else %}bg-secondary{% endif %}">
+                                            {{ copy.get_status_display }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {% if copy.status != 'a' %}
+                                            {{ copy.due_back }}
+                                        {% else %}
+                                            <span class="text-muted">—</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if copy.status == 'a' %}
+                                        <button class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-cart-plus me-1"></i>Забронировать
+                                        </button>
+                                        {% else %}
+                                        <button class="btn btn-sm btn-outline-secondary" disabled>
+                                            Недоступно
+                                        </button>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>В настоящее время нет доступных экземпляров этой книги.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Похожие книги -->
+            <div class="card border-0 shadow-sm mt-4">
+                <div class="card-body">
+                    <h5 class="card-title border-bottom pb-2">
+                        <i class="bi bi-bookmarks me-2"></i>Похожие книги
+                    </h5>
+                    <div class="row">
+                        {% for i in "123" %}
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <img src="https://via.placeholder.com/150x200" class="card-img-top" alt="Похожая книга" style="height: 200px; object-fit: cover;">
+                                <div class="card-body">
+                                    <h6 class="card-title">Название похожей книги {{ forloop.counter }}</h6>
+                                    <p class="card-text text-muted small">Автор {{ forloop.counter }}</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="text-primary fw-bold">899 ₽</span>
+                                        <button class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
